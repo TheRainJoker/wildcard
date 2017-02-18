@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Ecommerce" default="Execute" basedir=".">
+	
+	<!-- Carico il file di properties -->
+	
+	<property file="build.properties"/>
+	
+	<!-- Creazione TimeStamp -->
+	
+	<tstamp>
+		<format property="Date" pattern="dd-MM-yyyy"  locale="en,GB" />
+	</tstamp>
+	<tstamp>
+		<format property="Time" pattern="HH-mm-ss"  locale="en,GB" />
+	</tstamp>		
+
+	<!-- Creazione del classpath per la compilazione delle classi -->
+	
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+	</path>
+	
+	<!-- Compilazione e creazione del file war -->
+
+	<target name="Execute">
+		
+		<javac srcdir="${src.dir}" destdir="${target.dir}/classes" 
+										 fork="yes" includeantruntime="false" 
+											includes="**/*.java, **/*.properties, **/*.xml"
+			 									debug="on" debuglevel="lines,vars,source">
+			<classpath refid="classpath"/>
+		</javac>
+		
+		<echo message="Compilate le classi java"/>
+		
+		<copy todir="${WEB-INF.dir}/classes/">
+			<fileset dir="${target.dir}/classes">
+				<include name="**/*" />
+				<exclude name="**/.metadata/*" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${WEB-INF.dir}/classes/">
+			<fileset dir="${src.dir}">
+				<include name="**/*" />
+				<exclude name="**/.metadata/*" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${WEB-INF.dir}/lib/">
+			<fileset dir="${lib.dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		
+		
+		<delete dir="${deploy.dir}"/>
+		
+		<mkdir dir="${deploy.dir}"/>
+
+		<copy todir="${deploy.dir}/build">
+			<file file="build.properties"/>
+			<file file="build.xml"/>
+		</copy>
+		
+		<copy todir="${deploy.dir}">
+			<fileset dir="${WebContent.dir}">
+				<include name="**/*" />
+				<exclude name="**/.metadata/*" />
+			</fileset>
+			<file file="../pom.xml"/>
+		</copy>
+		<copy todir="${deploy.dir}/configuration">	
+			<fileset dir="${configuration.dir}">
+				<include name="**/*" />
+				<exclude name="**/.metadata/*" />
+			</fileset>
+		</copy>
+		
+		<war destfile="${target.dir}/${project.name}.war" webxml="${WEB-INF.dir}/web.xml">
+			<fileset dir="${deploy.dir}"/>
+		</war>
+		
+		<echo message="Creato il file war"/>
+		
+	</target>
+	
+	<!-- Deploy nella cartella webapps di Tomcat -->
+	
+	<target name="DeployOnTomcatDir" depends="Execute">
+		<delete dir="${tomcatWebapps.dir}/${project.name}"/>
+		<delete file="${tomcatWebapps.dir}/${project.name}.war"></delete>
+		<copy todir="${tomcatWebapps.dir}">
+			<file file="${target.dir}/${project.name}.war"/>
+		</copy>
+		<delete dir="${tomcatWebapps.dir}/${configuration.dir.name}"/>
+		<mkdir dir="${tomcatWebapps.dir}/${configuration.dir.name}"/>
+		<copy todir="${tomcatWebapps.dir}/${configuration.dir.name}">
+			<fileset dir="${configuration.dir}">
+				<include name="**/*" />
+				<exclude name="**/.metadata/*" />
+			</fileset>
+		</copy>
+	</target>
+	
+	
+</project>

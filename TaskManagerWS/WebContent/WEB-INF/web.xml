@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>TaskManagerWS</display-name>
+
+	<servlet>
+		<servlet-name>TaskManagerWS</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>it.franze.taskManager.ws.service</param-value>
+		</init-param>
+<!-- 		<security-role-ref> -->
+<!-- 			<role-name>TaskManagerRoleRef</role-name> -->
+<!-- 			<role-link>TaskManagerRole</role-link> -->
+<!-- 		</security-role-ref> -->
+<!-- 		<load-on-startup>1</load-on-startup> -->
+	</servlet>
+<!-- 	<security-role> -->
+<!-- 		<role-name>TaskManagerRole</role-name> -->
+<!-- 	</security-role> -->
+
+	<servlet-mapping>
+		<servlet-name>TaskManagerWS</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>user</web-resource-name>
+			<url-pattern>/user</url-pattern>
+			<http-method>POST</http-method>
+			<http-method>PUT</http-method>
+		</web-resource-collection>
+<!-- 		<auth-constraint> -->
+<!-- 			<role-name>TaskManagerRole</role-name> -->
+<!-- 		</auth-constraint> -->
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>login</web-resource-name>
+			<url-pattern>/login/*</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+<!-- 		<auth-constraint> -->
+<!-- 			<role-name>TaskManagerRole</role-name> -->
+<!-- 		</auth-constraint> -->
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	
+<!-- 	<login-config> -->
+<!-- 		<auth-method>BASIC</auth-method> -->
+<!-- 		<realm-name>file</realm-name> -->
+<!-- 	</login-config> -->
+	
+</web-app>
